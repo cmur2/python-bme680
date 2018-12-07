@@ -57,7 +57,7 @@ try:
         if sensor.get_sensor_data():
             output = '{0:.2f} C,{1:.2f} hPa,{2:.2f} %RH'.format(
                 sensor.data.temperature,
-                sensor.data.pressure,
+                sensor.data.pressure / 100.0,
                 sensor.data.humidity)
 
             if sensor.data.heat_stable:

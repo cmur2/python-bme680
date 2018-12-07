@@ -24,7 +24,7 @@ def display_data(offset=0):
     sensor.get_sensor_data()
     output = '{0:.2f} C, {1:.2f} hPa, {2:.3f} %RH'.format(
         sensor.data.temperature,
-        sensor.data.pressure,
+        sensor.data.pressure / 100.0,
         sensor.data.humidity)
     print(output)
     print('')
