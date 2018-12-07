@@ -1,45 +1,20 @@
 # BME680
 
-[![Build Status](https://travis-ci.org/pimoroni/bme680-python.svg?branch=master)](https://travis-ci.org/pimoroni/bme680-python)
-[![Coverage Status](https://coveralls.io/repos/github/pimoroni/bme680-python/badge.svg?branch=master)](https://coveralls.io/github/pimoroni/bme680-python?branch=master)
-[![PyPi Package](https://img.shields.io/pypi/v/bme680.svg)](https://pypi.python.org/pypi/bme680)
-[![Python Versions](https://img.shields.io/pypi/pyversions/bme680.svg)](https://pypi.python.org/pypi/bme680)
+[![Build Status](https://travis-ci.org/cmur2/python-bme680.svg?branch=master)](https://travis-ci.org/cmur2/python-bme680)
 
 https://shop.pimoroni.com/products/bme680
 
 The state-of-the-art BME680 breakout lets you measure temperature, pressure, humidity, and indoor air quality.
 
-## Installing
+## About this Fork
 
-### Full install (recommended):
+In general this fork tries to improve some details of the [original pimoroni/bme680-python repo](https://github.com/pimoroni/bme680-python):
 
-We've created an easy installation script that will install all pre-requisites and get your BME680
-up and running with minimal efforts. To run it, fire up Terminal which you'll find in Menu -> Accessories -> Terminal
-on your Raspberry Pi desktop, as illustrated below:
+- use standard unit for pressure measurement (Pascal instead Hectopascal, user can convert if he likes)
+- floating point precision for measurement compensations (user has all precision available to choose *based on measurement settings and datasheet* how much is trustable)
+- no redundant tweaking of measurement settings after soft reset
 
-![Finding the terminal](http://get.pimoroni.com/resources/github-repo-terminal.png)
-
-In the new terminal window type the command exactly as it appears below (check for typos) and follow the on-screen instructions:
-
-```bash
-curl https://get.pimoroni.com/bme680 | bash
-```
-
-### Manual install:
-
-#### Library install for Python 3:
-
-```bash
-sudo pip3 install bme680
-```
-
-#### Library install for Python 2:
-
-```bash
-sudo pip2 install bme680
-```
-
-### Development:
+## Development
 
 If you want to contribute, or like living on the edge of your seat by having the latest code, you should clone this repository, `cd` to the library directory, and run:
 
@@ -53,4 +28,3 @@ In all cases you will have to enable the i2c bus.
 ## Documentation & Support
 
 * Guides and tutorials - https://learn.pimoroni.com/bme680
-* Get help - http://forums.pimoroni.com/c/support
