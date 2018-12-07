@@ -50,13 +50,7 @@ class BME680(BME680Data):
 
         self._get_calibration_data()
 
-        self.set_humidity_oversample(constants.OS_2X)
-        self.set_pressure_oversample(constants.OS_4X)
-        self.set_temperature_oversample(constants.OS_8X)
-        self.set_filter(constants.FILTER_SIZE_3)
-        self.set_gas_status(constants.ENABLE_GAS_MEAS)
         self.set_temp_offset(0)
-        self.get_sensor_data()
 
     def _get_calibration_data(self):
         """Retrieve the sensor calibration data and store it in .calibration_data."""
