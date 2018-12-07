@@ -1,7 +1,7 @@
 """BME680 constants, structures and utilities."""
 
 # BME680 General config
-POLL_PERIOD_MS = 10
+POLL_PERIOD_MS = 50
 
 # BME680 I2C addresses
 I2C_ADDR_PRIMARY = 0x76
