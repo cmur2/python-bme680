@@ -315,68 +315,68 @@ class BME680(BME680Data):
 
     def _calc_temperature(self, temperature_adc):
         """Convert the raw temperature to degrees C using calibration_data."""
-        var1 = (temperature_adc >> 3) - (self.calibration_data.par_t1 << 1)
-        var2 = (var1 * self.calibration_data.par_t2) >> 11
-        var3 = ((var1 >> 1) * (var1 >> 1)) >> 12
-        var3 = ((var3) * (self.calibration_data.par_t3 << 4)) >> 14
+        var1 = (temperature_adc / 8.0) - (self.calibration_data.par_t1 * 2.0)
+        var2 = (var1 * self.calibration_data.par_t2) / 2048.0
+        var3 = ((var1 / 2.0) * (var1 / 2.0)) / 4096.0
+        var3 = ((var3) * (self.calibration_data.par_t3 * 16.0)) / 16384.0
 
         # Save teperature data for pressure calculations
         self.calibration_data.t_fine = (var2 + var3) + self.offset_temp_in_t_fine
-        calc_temp = (((self.calibration_data.t_fine * 5) + 128) >> 8)
+        calc_temp = (((self.calibration_data.t_fine * 5.0) + 128.0) / 256.0)
 
         return calc_temp
 
     def _calc_pressure(self, pressure_adc):
         """Convert the raw pressure using calibration data."""
-        var1 = ((self.calibration_data.t_fine) >> 1) - 64000
-        var2 = ((((var1 >> 2) * (var1 >> 2)) >> 11) *
-                self.calibration_data.par_p6) >> 2
-        var2 = var2 + ((var1 * self.calibration_data.par_p5) << 1)
-        var2 = (var2 >> 2) + (self.calibration_data.par_p4 << 16)
-        var1 = (((((var1 >> 2) * (var1 >> 2)) >> 13) *
-                ((self.calibration_data.par_p3 << 5)) >> 3) +
-                ((self.calibration_data.par_p2 * var1) >> 1))
-        var1 = var1 >> 18
+        var1 = (self.calibration_data.t_fine / 2.0) - 64000.0
+        var2 = ((((var1 / 4.0) * (var1 / 4.0)) / 2048.0) *
+                self.calibration_data.par_p6) / 4.0
+        var2 = var2 + ((var1 * self.calibration_data.par_p5) * 2.0)
+        var2 = (var2 / 4.0) + (self.calibration_data.par_p4 * 65536.0)
+        var1 = (((((var1 / 4.0) * (var1 / 4.0)) / 8192.0) *
+                ((self.calibration_data.par_p3 * 32.0)) / 8.0) +
+                ((self.calibration_data.par_p2 * var1) / 2.0))
+        var1 = var1 / 262144.0
 
-        var1 = ((32768 + var1) * self.calibration_data.par_p1) >> 15
-        calc_pressure = 1048576 - pressure_adc
-        calc_pressure = ((calc_pressure - (var2 >> 12)) * (3125))
+        var1 = ((32768.0 + var1) * self.calibration_data.par_p1) / 32768.0
+        calc_pressure = 1048576.0 - pressure_adc
+        calc_pressure = ((calc_pressure - (var2 / 4096.0)) * (3125.0))
 
         if calc_pressure >= (1 << 31):
-            calc_pressure = ((calc_pressure // var1) << 1)
+            calc_pressure = ((calc_pressure / var1) * 2.0)
         else:
-            calc_pressure = ((calc_pressure << 1) // var1)
+            calc_pressure = ((calc_pressure * 2.0) / var1)
 
-        var1 = (self.calibration_data.par_p9 * (((calc_pressure >> 3) *
-                (calc_pressure >> 3)) >> 13)) >> 12
-        var2 = ((calc_pressure >> 2) *
-                self.calibration_data.par_p8) >> 13
-        var3 = ((calc_pressure >> 8) * (calc_pressure >> 8) *
-                (calc_pressure >> 8) *
-                self.calibration_data.par_p10) >> 17
+        var1 = (self.calibration_data.par_p9 * (((calc_pressure / 8.0) *
+                (calc_pressure / 8.0)) / 8192.0)) / 4096.0
+        var2 = ((calc_pressure / 4.0) *
+                self.calibration_data.par_p8) / 8192.0
+        var3 = ((calc_pressure / 256.0) * (calc_pressure / 256.0) *
+                (calc_pressure / 256.0) *
+                self.calibration_data.par_p10) / 131072.0
 
         calc_pressure = (calc_pressure) + ((var1 + var2 + var3 +
-                                           (self.calibration_data.par_p7 << 7)) >> 4)
+                                           (self.calibration_data.par_p7 * 128.0)) / 16.0)
 
         return calc_pressure
 
     def _calc_humidity(self, humidity_adc):
         """Convert the raw humidity using calibration data."""
-        temp_scaled = ((self.calibration_data.t_fine * 5) + 128) >> 8
-        var1 = (humidity_adc - ((self.calibration_data.par_h1 * 16))) -\
-               (((temp_scaled * self.calibration_data.par_h3) // (100)) >> 1)
+        temp_scaled = ((self.calibration_data.t_fine * 5.0) + 128.0) / 256.0
+        var1 = (humidity_adc - ((self.calibration_data.par_h1 * 16.0))) -\
+               (((temp_scaled * self.calibration_data.par_h3) / (100.0)) / 2.0)
         var2 = (self.calibration_data.par_h2 *
-                (((temp_scaled * self.calibration_data.par_h4) // (100)) +
-                 (((temp_scaled * ((temp_scaled * self.calibration_data.par_h5) // (100))) >> 6) //
-                 (100)) + (1 * 16384))) >> 10
+                (((temp_scaled * self.calibration_data.par_h4) / (100.0)) +
+                 (((temp_scaled * ((temp_scaled * self.calibration_data.par_h5) / (100.0))) / 64.0) /
+                 (100.0)) + (1.0 * 16384.0))) / 1024.0
         var3 = var1 * var2
-        var4 = self.calibration_data.par_h6 << 7
-        var4 = ((var4) + ((temp_scaled * self.calibration_data.par_h7) // (100))) >> 4
-        var5 = ((var3 >> 14) * (var3 >> 14)) >> 10
-        var6 = (var4 * var5) >> 1
-        calc_hum = (((var3 + var6) >> 10) * (1000)) >> 12
+        var4 = self.calibration_data.par_h6 * 128.0
+        var4 = ((var4) + ((temp_scaled * self.calibration_data.par_h7) / (100.0))) / 16.0
+        var5 = ((var3 / 16384.0) * (var3 / 16384.0)) / 1024.0
+        var6 = (var4 * var5) / 2.0
+        calc_hum = (((var3 + var6) / 1024.0) * (1000.0)) / 4096.0
 
-        return min(max(calc_hum, 0), 100000)
+        return min(max(calc_hum, 0.0), 100000.0)
 
     def _calc_gas_resistance(self, gas_res_adc, gas_range):
         """Convert the raw gas resistance using calibration data."""
