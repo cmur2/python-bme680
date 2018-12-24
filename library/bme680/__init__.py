@@ -51,6 +51,7 @@ class BME680(BME680Data):
         self._get_calibration_data()
 
         self.set_temp_offset(0)
+        self.ambient_temperature = 25 # only for gas heater temperature, nearly irrelevant
 
     def _get_calibration_data(self):
         """Retrieve the sensor calibration data and store it in .calibration_data."""
