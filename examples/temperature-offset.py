@@ -1,7 +1,11 @@
 #!/usr/bin/env python
+
 import bme680
 
-print("""Display Temperature, Pressure and Humidity with different offsets.
+print("""temperature-offset.py - Displays temperature, pressure, and humidity with different offsets.
+
+Press Ctrl+C to exit!
+
 """)
 
 try:
