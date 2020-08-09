@@ -1,3 +1,4 @@
+import pytest
 import bme680
 
 
@@ -5,8 +6,8 @@ def test_calc_temperature(smbus, calibration):
     """Validate temperature calculation against mock calibration data."""
     sensor = bme680.BME680()
     sensor.calibration_data = calibration
-    assert sensor._calc_temperature(501240) == 2669
-    assert sensor.calibration_data.t_fine == 136667
+    assert sensor._calc_temperature(501240) == pytest.approx(2669.81, 0.01)
+    assert sensor.calibration_data.t_fine == pytest.approx(136668.78, 0.01)
 
 
 def test_calc_pressure(smbus, calibration):
@@ -14,7 +15,7 @@ def test_calc_pressure(smbus, calibration):
     sensor = bme680.BME680()
     sensor.calibration_data = calibration
     sensor._calc_temperature(501240)
-    assert sensor._calc_pressure(353485) == 98712
+    assert sensor._calc_pressure(353485) == pytest.approx(98716.92, 0.01)
 
 
 def test_calc_humidity(smbus, calibration):
@@ -22,7 +23,7 @@ def test_calc_humidity(smbus, calibration):
     sensor = bme680.BME680()
     sensor.calibration_data = calibration
     sensor._calc_temperature(501240)
-    assert sensor._calc_humidity(19019) == 42402
+    assert sensor._calc_humidity(19019) == pytest.approx(42410.28, 0.01)
 
 
 def test_calc_gas_resistance(smbus, calibration):
@@ -37,5 +38,5 @@ def test_temp_offset(smbus, calibration):
     sensor = bme680.BME680()
     sensor.calibration_data = calibration
     sensor.set_temp_offset(1.99)
-    assert sensor._calc_temperature(501240) == 2669 + 199
-    assert sensor.calibration_data.t_fine == 146830
+    assert sensor._calc_temperature(501240) == pytest.approx(2868.30, 0.01)
+    assert sensor.calibration_data.t_fine == pytest.approx(146831.78, 0.01)
