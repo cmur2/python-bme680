@@ -1,6 +1,6 @@
 # BME680
 
-[![Build Status](https://travis-ci.org/cmur2/python-bme680.svg?branch=master)](https://travis-ci.org/cmur2/python-bme680)
+[![Build Status](https://travis-ci.com/cmur2/python-bme680.svg?branch=master)](https://travis-ci.com/cmur2/python-bme680)
 
 https://shop.pimoroni.com/products/bme680
 
